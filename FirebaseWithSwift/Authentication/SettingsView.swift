@@ -11,6 +11,13 @@ import SwiftUI
 @Observable
 final class SettingsViewModel {
     
+    var authProviders: [AuthProviderOption] = []
+    
+    func loadAuthProviders() {
+        if let provider = try? AuthenticationManager.shared.getProviders() {
+            authProviders = provider
+        }
+    }
     func signOut() throws {
         try AuthenticationManager.shared.signOut()
     }
@@ -53,35 +60,39 @@ struct SettingsView: View {
                 }
             }
             
-            Button("Reset password") {
-                Task {
-                    do {
-                        try await viewModel.resetPassword()
-                        print("Password reset")
-                    } catch {
-                        print(error)
-                    }
-                }
-            }
-            Section("Modify your account") {
-                Button("Update password") {
-                    Task {
-                        do {
-                            try await viewModel.updatePassword()
-                            print("Password updated!")
-                        } catch {
-                            print(error)
+            if viewModel.authProviders.contains(.email) {
+                Section("Modify your account") {
+                    
+                    Button("Reset password") {
+                        Task {
+                            do {
+                                try await viewModel.resetPassword()
+                                print("Password reset")
+                            } catch {
+                                print(error)
+                            }
                         }
                     }
-                }
-                
-                Button("Update email") {
-                    Task {
-                        do {
-                            try await viewModel.updateEmail()
-                            print("Email updated!")
-                        } catch {
-                            print(error)
+                    
+                    Button("Update password") {
+                        Task {
+                            do {
+                                try await viewModel.updatePassword()
+                                print("Password updated!")
+                            } catch {
+                                print(error)
+                            }
+                        }
+                    }
+                    
+                    Button("Update email") {
+                        Task {
+                            do {
+                                try await viewModel.updateEmail()
+                                print("Email updated!")
+                            } catch {
+                                print(error)
+                            }
                         }
                     }
                 }
