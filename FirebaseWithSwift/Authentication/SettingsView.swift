@@ -44,6 +44,7 @@ final class SettingsViewModel {
 }
 
 struct SettingsView: View {
+    
     @State private var viewModel = SettingsViewModel()
     @Binding var showSignInView: Bool
     
@@ -99,6 +100,9 @@ struct SettingsView: View {
             }
         }
         .navigationTitle("Settings")
+        .onAppear {
+            viewModel.loadAuthProviders()
+        }
     }
 }
 

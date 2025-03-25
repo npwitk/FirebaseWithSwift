@@ -47,9 +47,11 @@ final class AuthenticationManager {
         }
         
         var providers: [AuthProviderOption] = []
+        
         for provider in providerData {
             if let option = AuthProviderOption(rawValue: provider.providerID) {
                 providers.append(option)
+                print("Appended \(option)!")
             } else {
                 assertionFailure("Provider option not found: \(provider.providerID)")
             }
