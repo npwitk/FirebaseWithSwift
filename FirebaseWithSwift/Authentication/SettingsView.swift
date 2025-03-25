@@ -12,14 +12,20 @@ import SwiftUI
 final class SettingsViewModel {
     
     var authProviders: [AuthProviderOption] = []
+    var authUser: AuthDataResultModel? = nil
     
     func loadAuthProviders() {
         if let provider = try? AuthenticationManager.shared.getProviders() {
             authProviders = provider
         }
     }
+    
     func signOut() throws {
         try AuthenticationManager.shared.signOut()
+    }
+    
+    func loadAuthUser() {
+        self.authUser = try? AuthenticationManager.shared.getAuthenticatedUser()
     }
     
     func resetPassword() async throws {
@@ -41,6 +47,24 @@ final class SettingsViewModel {
         let password = "Hello123!"
         try await AuthenticationManager.shared.updatePassword(password: password)
     }
+    
+    func linkGoogleAccount() async throws {
+        let helper = SignInGoogleHelper()
+        let tokens = try await helper.signIn()
+        self.authUser = try await AuthenticationManager.shared.linkGoogle(tokens: tokens)
+    }
+    
+    func linkAppleAccount() async throws {
+        let helper = SignInAppleHelper()
+        let tokens = try await helper.startSignInWithAppleFlow()
+        self.authUser = try await AuthenticationManager.shared.linkApple(tokens: tokens)
+    }
+    
+    func linkEmailAccount() async throws {
+        let email = "npcentreth@gmail.com"
+        let password = "Hello123!"
+        self.authUser = try await AuthenticationManager.shared.linkEmail(email: email, password: password)
+    }
 }
 
 struct SettingsView: View {
@@ -60,6 +84,47 @@ struct SettingsView: View {
                     }
                 }
             }
+            
+            
+            if viewModel.authUser?.isAnonymous == true {
+                Section("Create Account") {
+                    
+                    Button("Link Google Account") {
+                        Task {
+                            do {
+                                try await viewModel.linkGoogleAccount()
+                                print("Goooooogle LINKED!")
+                            } catch {
+                                print(error)
+                            }
+                        }
+                    }
+                    
+                    Button("Link Apple Account") {
+                        Task {
+                            do {
+                                try await viewModel.linkAppleAccount()
+                                print("Apple LINKED!")
+                            } catch {
+                                print(error)
+                            }
+                        }
+                    }
+                    
+                    Button("Link Email Account") {
+                        Task {
+                            do {
+                                try await viewModel.linkEmailAccount()
+                                print("Email LINKED!")
+                            } catch {
+                                print(error)
+                            }
+                        }
+                    }
+                    
+                }
+            }
+            
             
             if viewModel.authProviders.contains(.email) {
                 Section("Modify your account") {
@@ -102,6 +167,7 @@ struct SettingsView: View {
         .navigationTitle("Settings")
         .onAppear {
             viewModel.loadAuthProviders()
+            viewModel.loadAuthUser()
         }
     }
 }
