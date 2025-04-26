@@ -108,6 +108,7 @@ final class ProductViewModel {
         }
     }
     
+    
     //    func getProductsByRating() {
     //        Task {
     ////            let newProducts = try await ProductsManager.shared.getProductsByRating(count: 3, lastRating: self.products.last?.rating) // But this approach could be a problem when you run into products with same ratings
@@ -117,6 +118,13 @@ final class ProductViewModel {
     //            self.lastDocument = lastDocument
     //        }
     //    }
+    
+    func addUserFavoriteProduct(productId: Int) {
+        Task {
+            let authDataResult = try AuthenticationManager.shared.getAuthenticatedUser()
+            try? await UserManager.shared.addUserFavoriteProduct(userId: authDataResult.uid, productId: productId)
+        }
+    }
 }
 
 
@@ -131,6 +139,20 @@ struct ProductView: View {
             
             ForEach(viewModel.products) { product in
                 ProductCellView(product: product)
+//                    .contextMenu {
+//                        Button("Add to favorites") {
+//                            
+//                        }
+//                    }
+                    .swipeActions(edge: .trailing) {
+                        Button {
+                            viewModel.addUserFavoriteProduct(productId: product.id)
+                        } label: {
+                            Label("Add to favorite", systemImage: "star.fill")       
+                        }
+                        .tint(Color.orange)
+                    }
+                
                 
                 if product == viewModel.products.last {
                     ProgressView()
@@ -141,8 +163,6 @@ struct ProductView: View {
                         }
                 }
             }
-            
-            
         }
         .navigationTitle("Products")
         .toolbar {
@@ -174,8 +194,8 @@ struct ProductView: View {
         .onAppear {
             viewModel.getProductsCount()
             viewModel.getProducts()
-
         }
+        
         //        .task {
         //            try? await viewModel.getAllProducts()
         //        }
