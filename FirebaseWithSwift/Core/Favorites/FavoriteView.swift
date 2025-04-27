@@ -5,32 +5,13 @@
 //  Created by Nonprawich I. on 26/4/25.
 //
 
+import Combine
 import SwiftUI
 
-@MainActor
-@Observable
-final class FavoriteViewModel {
-    private(set) var userFavoriteProducts: [UserFavoriteProduct] = []
-    
-    func getFavorites() {
-        Task {
-            let authDataResult = try AuthenticationManager.shared.getAuthenticatedUser()
-            self.userFavoriteProducts = try await UserManager.shared.getAllUserFavoriteProducts(userId: authDataResult.uid)
-            
-        }
-    }
-    
-    func removeFromFavorites(favoriteProductId: String) {
-        Task {
-            let authDataResult = try AuthenticationManager.shared.getAuthenticatedUser()
-            try? await UserManager.shared.removeUserFavoriteProduct(userId: authDataResult.uid, favoriteProductId: favoriteProductId)
-            getFavorites()
-        }
-    }
-}
 
 struct FavoriteView: View {
     @State private var viewModel = FavoriteViewModel()
+    
     
     var body: some View {
         List {
@@ -47,14 +28,16 @@ struct FavoriteView: View {
             }
         }
         .navigationTitle("Favorites")
-        .onAppear {
-            viewModel.getFavorites()
-        }
+        .onFirstAppear(perform: viewModel.addListenerForFavorites)
     }
 }
+
+
 
 #Preview {
     NavigationStack {
         FavoriteView()
     }
 }
+ 
+

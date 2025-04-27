@@ -5,6 +5,7 @@
 //  Created by Nonprawich I. on 7/4/25.
 //
 
+import Combine
 import Foundation
 import FirebaseFirestore
 
@@ -116,46 +117,4 @@ final class ProductsManager {
         try await productsCollection.aggregateCount()
     }
     
-}
-
-extension Query {
-    
-//    func getDocuments<T>(as type: T.Type) async throws  -> [T] where T: Decodable {
-//        let snapshot = try await self.getDocuments()
-//        
-//        return try snapshot.documents.map({ document in
-//            return try document.data(as: T.self)
-//        })
-//    }
-    
-    func getDocuments<T>(as type: T.Type) async throws  -> [T] where T: Decodable {
-//        let (products, _) = try await getDocumentsWithSnapshot(as: type)
-//        return products
-        
-//        try await getDocumentsWithSnapshot(as: type).0 // THE POWER OF SWIFT!!
-        
-        try await getDocumentsWithSnapshot(as: type).products
-    }
-    
-    func getDocumentsWithSnapshot<T>(as type: T.Type) async throws  -> (products: [T], lastDocument: DocumentSnapshot?) where T: Decodable { // MODIFY above one to return document as well
-        let snapshot = try await self.getDocuments()
-        
-        let products =  try snapshot.documents.map({ document in
-            return try document.data(as: T.self)
-        })
-        
-        return (products, snapshot.documents.last)
-    }
-    
-    // .start(afterDocument: lastDocument)
-    
-    func startOptionally(afterDocument lastDocument: DocumentSnapshot?) -> Query {
-        guard let lastDocument else { return self }
-        return self.start(afterDocument: lastDocument)
-    }
-    
-    func aggregateCount() async throws -> Int {
-        let snapshot = try await self.count.getAggregation(source: .server)
-        return Int(truncating: snapshot.count)
-    }
 }
