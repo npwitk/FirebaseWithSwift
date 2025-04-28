@@ -193,7 +193,8 @@ final class UserManager {
         let data: [String: Any] = [
 //            "is_premium" : isPremium
 //            "user_isPremium" : isPremium // Don't hard-code like this!
-            DBUser.CodingKeys.isPremium.rawValue : isPremium // This is better!
+            DBUser.CodingKeys.isPremium.rawValue : isPremium, // This is better!
+//            "custom_key" : "123"
         ]
         
         try await userDocument(userId: userId).updateData(data)
