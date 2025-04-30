@@ -17,7 +17,7 @@ struct Movie: Codable {
 
 struct DBUser: Codable {
     let userId: String
-    let isAnonymous:  Bool?
+    let isAnonymous: Bool?
     let email: String?
     let photoUrl: String?
     let dateCreated: Date?
@@ -26,7 +26,7 @@ struct DBUser: Codable {
     let favoriteMovie: Movie?
     let profileImagePath: String?
     let profileImagePathUrl: String?
-    
+
     init(auth: AuthDataResultModel) {
         self.userId = auth.uid
         self.isAnonymous = auth.isAnonymous
@@ -42,7 +42,7 @@ struct DBUser: Codable {
     
     init(
         userId: String,
-        isAnonymous:  Bool? = nil,
+        isAnonymous: Bool? = nil,
         email: String? = nil,
         photoUrl: String? = nil,
         dateCreated: Date? = nil,
@@ -51,7 +51,6 @@ struct DBUser: Codable {
         favoriteMovie: Movie? = nil,
         profileImagePath: String? = nil,
         profileImagePathUrl: String? = nil
-        
     ) {
         self.userId = userId
         self.isAnonymous = isAnonymous
@@ -65,7 +64,7 @@ struct DBUser: Codable {
         self.profileImagePathUrl = profileImagePathUrl
     }
     
-//    func togglePremiumStatus() -> DBUser { OLD VERSION BEFORE CHANGING `isPremium` LET TO VAR
+//    func togglePremiumStatus() -> DBUser {
 //        let currentValue = isPremium ?? false
 //        return DBUser(
 //            userId: userId,
@@ -73,8 +72,7 @@ struct DBUser: Codable {
 //            email: email,
 //            photoUrl: photoUrl,
 //            dateCreated: dateCreated,
-//            isPremium: !currentValue
-//        )
+//            isPremium: !currentValue)
 //    }
     
 //    mutating func togglePremiumStatus() {
@@ -88,14 +86,14 @@ struct DBUser: Codable {
         case email = "email"
         case photoUrl = "photo_url"
         case dateCreated = "date_created"
-        case isPremium = "user_isPremium" // Custom CodingKey
+        case isPremium = "user_isPremium"
         case preferences = "preferences"
         case favoriteMovie = "favorite_movie"
         case profileImagePath = "profile_image_path"
         case profileImagePathUrl = "profile_image_path_url"
     }
-    
-    init(from decoder: any Decoder) throws {
+
+    init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.userId = try container.decode(String.self, forKey: .userId)
         self.isAnonymous = try container.decodeIfPresent(Bool.self, forKey: .isAnonymous)
@@ -107,10 +105,9 @@ struct DBUser: Codable {
         self.favoriteMovie = try container.decodeIfPresent(Movie.self, forKey: .favoriteMovie)
         self.profileImagePath = try container.decodeIfPresent(String.self, forKey: .profileImagePath)
         self.profileImagePathUrl = try container.decodeIfPresent(String.self, forKey: .profileImagePathUrl)
-        
     }
     
-    func encode(to encoder: any Encoder) throws {
+    func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(self.userId, forKey: .userId)
         try container.encodeIfPresent(self.isAnonymous, forKey: .isAnonymous)
@@ -215,14 +212,14 @@ final class UserManager {
         try await userDocument(userId: userId).updateData(data)
     }
     
-    func updateUserProfilePath(userId: String, path: String?, url: String?) async throws {
-        let data: [String: Any] = [
-            DBUser.CodingKeys.profileImagePath.rawValue : path,
-            DBUser.CodingKeys.profileImagePathUrl.rawValue : url,
-        ]
-        
-        try await userDocument(userId: userId).updateData(data)
-    }
+    func updateUserProfileImagePath(userId: String, path: String?, url: String?) async throws {
+            let data: [String:Any] = [
+                DBUser.CodingKeys.profileImagePath.rawValue : path,
+                DBUser.CodingKeys.profileImagePathUrl.rawValue : url,
+            ]
+
+            try await userDocument(userId: userId).updateData(data)
+        }
     
     func addUserPreference(userId: String, preference: String) async throws {
         let data: [String: Any] = [

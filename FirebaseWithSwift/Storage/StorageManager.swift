@@ -20,12 +20,12 @@ final class StorageManager {
         storage.child("images")
     }
     
-    func getPathForImage(path: String) -> StorageReference {
-        Storage.storage().reference(withPath: path)
-    }
-    
     private func userReference(userId: String) -> StorageReference {
         storage.child("users").child(userId)
+    }
+    
+    func getPathForImage(path: String) -> StorageReference {
+        Storage.storage().reference(withPath: path)
     }
     
     func getUrlForImage(path: String) async throws -> URL {
@@ -33,7 +33,7 @@ final class StorageManager {
     }
     
     func getData(userId: String, path: String) async throws -> Data {
-        // try await userReference(userId: userId).child(path).data(maxSize: 3 * 1024 * 1024)
+        //try await userReference(userId: userId).child(path).data(maxSize: 3 * 1024 * 1024)
         try await storage.child(path).data(maxSize: 3 * 1024 * 1024)
     }
     
@@ -62,7 +62,7 @@ final class StorageManager {
     }
     
     func saveImage(image: UIImage, userId: String) async throws -> (path: String, name: String) {
-        // image.pngData() also exists
+        // image.pngData()
         guard let data = image.jpegData(compressionQuality: 1) else {
             throw URLError(.backgroundSessionWasDisconnected)
         }
@@ -73,6 +73,4 @@ final class StorageManager {
     func deleteImage(path: String) async throws {
         try await getPathForImage(path: path).delete()
     }
-    
-
 }

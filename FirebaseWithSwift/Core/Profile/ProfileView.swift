@@ -24,7 +24,7 @@ struct ProfileView: View {
     var body: some View {
         List {
             if let user = viewModel.user {
-                Text("UserID: \(user.userId)")
+                Text("UserId: \(user.userId)")
                 
                 if let isAnonymous = user.isAnonymous {
                     Text("Is Anonymous: \(isAnonymous.description.capitalized)")
@@ -38,7 +38,6 @@ struct ProfileView: View {
                 
                 VStack {
                     HStack {
-                        
                         ForEach(preferenceOptions, id: \.self) { string in
                             Button(string) {
                                 if preferenceIsSelected(text: string) {
@@ -51,7 +50,6 @@ struct ProfileView: View {
                             .buttonStyle(.borderedProminent)
                             .tint(preferenceIsSelected(text: string) ? .green : .red)
                         }
-                        
                     }
                     
                     Text("User preferences: \((user.preferences ?? []).joined(separator: ", "))")
@@ -65,12 +63,13 @@ struct ProfileView: View {
                         viewModel.removeFavoriteMovie()
                     }
                 } label: {
-                    Text("Favorite Movie: \(user.favoriteMovie?.title ?? "")")
+                    Text("Favorite Movie: \((user.favoriteMovie?.title ?? ""))")
                 }
                 
                 PhotosPicker(selection: $selectedItem, matching: .images, photoLibrary: .shared()) {
                     Text("Select a photo")
                 }
+                
                 
                 if let urlString = viewModel.user?.profileImagePathUrl, let url = URL(string: urlString) {
                     AsyncImage(url: url) { image in
@@ -83,26 +82,17 @@ struct ProfileView: View {
                         ProgressView()
                             .frame(width: 150, height: 150)
                     }
-                    
-                    if let _ = viewModel.user?.profileImagePath {
-                        Button("Delete image") {
-                            viewModel.deleteProfileImage()
-                        }
-                    }
                 }
                 
-                //                if let image {
-                //                    Image(uiImage: image)
-                //                        .resizable()
-                //                        .scaledToFill()
-                //                        .frame(width: 150, height: 150)
-                //                        .cornerRadius(10)
-                //                }
+                if viewModel.user?.profileImagePath != nil {
+                    Button("Delete image") {
+                        viewModel.deleteProfileImage()
+                    }
+                }
             }
         }
         .task {
             try? await viewModel.loadCurrentUser()
-            
         }
         .onChange(of: selectedItem, perform: { newValue in
             if let newValue {
@@ -112,7 +102,6 @@ struct ProfileView: View {
         .navigationTitle("Profile")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                
                 NavigationLink {
                     SettingsView(showSignInView: $showSignInView)
                 } label: {

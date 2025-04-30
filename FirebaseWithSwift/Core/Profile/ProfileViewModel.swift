@@ -23,7 +23,6 @@ final class ProfileViewModel {
     func togglePremiumStatus() {
         guard let user else { return }
         let currentValue = user.isPremium ?? false
-        
         Task {
             try await UserManager.shared.updateUserPremiumStatus(userId: user.userId, isPremium: !currentValue)
             self.user = try await UserManager.shared.getUser(userId: user.userId)
@@ -51,17 +50,15 @@ final class ProfileViewModel {
     func addFavoriteMovie() {
         guard let user else { return }
         let movie = Movie(id: "1", title: "Avatar 2", isPopular: true)
-        
         Task {
             try await UserManager.shared.addFavoriteMovie(userId: user.userId, movie: movie)
             self.user = try await UserManager.shared.getUser(userId: user.userId)
         }
     }
     
-    
     func removeFavoriteMovie() {
         guard let user else { return }
-         
+        
         Task {
             try await UserManager.shared.removeFavoriteMovie(userId: user.userId)
             self.user = try await UserManager.shared.getUser(userId: user.userId)
@@ -74,14 +71,11 @@ final class ProfileViewModel {
         Task {
             guard let data = try await item.loadTransferable(type: Data.self) else { return }
             let (path, name) = try await StorageManager.shared.saveImage(data: data, userId: user.userId)
-            print("Success!")
+            print("SUCCESS!")
             print(path)
             print(name)
-            
             let url = try await StorageManager.shared.getUrlForImage(path: path)
-            try await UserManager.shared.updateUserProfilePath(userId: user.userId, path: path, url: url.absoluteString)
-            
-            
+            try await UserManager.shared.updateUserProfileImagePath(userId: user.userId, path: path, url: url.absoluteString)
         }
     }
     
@@ -90,7 +84,7 @@ final class ProfileViewModel {
         
         Task {
             try await StorageManager.shared.deleteImage(path: path)
-            try await UserManager.shared.updateUserProfilePath(userId: user.userId, path: nil, url: nil)
+            try await UserManager.shared.updateUserProfileImagePath(userId: user.userId, path: nil, url: nil)
         }
     }
     
