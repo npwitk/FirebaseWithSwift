@@ -15,8 +15,9 @@ struct FirebaseWithSwiftApp: App {
     
     var body: some Scene {
         WindowGroup {
-//            RootView()
-            CrashView()
+            //            RootView()
+            //            CrashView()
+            PerformanceView()
         }
     }
 }
@@ -27,5 +28,13 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         FirebaseApp.configure()
         print("Configured Firebase!")
         return true
+    }
+    
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        
+    }
+    
+    func applicationWillResignActive(_ application: UIApplication) {
+        
     }
 }
