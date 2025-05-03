@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		958CFCC62DC5BF4600550775 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 958CFCC52DC5BF4600550775 /* AdSupport.framework */; };
 		958E37E92D8FB972000614EA /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 958E37E82D8FB972000614EA /* GoogleSignIn */; };
 		958E37EB2D8FB972000614EA /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 958E37EA2D8FB972000614EA /* GoogleSignInSwift */; };
 		9591AE732DC3BCCF00B2FD42 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 9591AE722DC3BCCF00B2FD42 /* FirebaseCrashlytics */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		958CFCC52DC5BF4600550775 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		95933ABB2D8D71BF0041F4D2 /* FirebaseWithSwift.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FirebaseWithSwift.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -49,6 +51,7 @@
 			files = (
 				95933AD02D8D73850041F4D2 /* FirebaseAnalytics in Frameworks */,
 				959C5BEE2D8E998900DA8582 /* FirebaseAuth in Frameworks */,
+				958CFCC62DC5BF4600550775 /* AdSupport.framework in Frameworks */,
 				958E37E92D8FB972000614EA /* GoogleSignIn in Frameworks */,
 				9591AE732DC3BCCF00B2FD42 /* FirebaseCrashlytics in Frameworks */,
 				95E326F42D9A2A1900E0EFC5 /* FirebaseFirestore in Frameworks */,
@@ -81,6 +84,7 @@
 		959C5BEC2D8E998900DA8582 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				958CFCC52DC5BF4600550775 /* AdSupport.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
